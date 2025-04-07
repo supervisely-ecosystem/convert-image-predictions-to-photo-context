@@ -1,0 +1,22 @@
+{
+  "name": "Convert 2D predictions to 3D point cloud masks",
+  "version": "2.0.0",
+  "type": "app",
+  "categories": [
+    "neural network",
+    "images",
+    "object detection",
+    "semantic segmentation",
+    "instance segmentation",
+    "inference interfaces",
+    "labeling"
+  ],
+  "description": "",
+  "docker_image": "supervisely/base-py-sdk:6.73.326",
+  "min_instance_version": "6.12.33",
+  "main_script": "src/main.py",
+  "headless": false,
+  "icon_cover": true,
+  "task_location": "application_sessions",
+  "integrated_into": ["image_annotation_tool"]
+}

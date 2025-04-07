@@ -1,0 +1,9 @@
+.DS_Store
+.venv
+supervisely
+data
+data_video
+storage
+test_files
+temp
+__pycache__
