@@ -12,7 +12,7 @@
     "labeling"
   ],
   "description": "",
-  "docker_image": "supervisely/visualization_stats:6.73.326",
+  "docker_image": "supervisely/import-export:6.73.326",
   "min_instance_version": "6.12.33",
   "main_script": "src/main.py",
   "headless": false,
