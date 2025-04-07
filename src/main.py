@@ -27,7 +27,6 @@ server = app.get_server()
 # * reimplementing the click event of the apply button to get the state
 @server.post(sync_btn.get_route_path(w.Button.Routes.CLICK))
 def sync_btn_click(request: Request):
-    # ! todo: use spawn_api instead of api
     text.hide()
     state = request.get("state")
     if not state:
@@ -35,7 +34,12 @@ def sync_btn_click(request: Request):
         return
 
     context = state.get("context")
-    image_id = context.get("imageId", 386561)
+    image_id = context.get("imageId")
+    if image_id is None:
+        sly.logger.warning("Image ID is None")
+        text.set("Image ID is None", status="error")
+        text.show()
+        return
 
     pcd_ann_api = g.spawn_api.pointcloud_episode if g.is_episode else g.spawn_api.pointcloud
     if g.project_id != context.get("projectId") or g.meta is None:
