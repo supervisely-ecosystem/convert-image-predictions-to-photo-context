@@ -22,8 +22,7 @@ sly.fs.clean_dir(app_data)
 task_id = sly.env.task_id()
 team_id = sly.env.team_id()
 workspace_id = sly.env.workspace_id()
-project_id = sly.env.project_id()
-project_info = api.project.get_info_by_id(project_id)
+project_id = sly.env.project_id(raise_not_found=False)
 is_episode = False
 dataset_id = sly.env.dataset_id(raise_not_found=False)
 
