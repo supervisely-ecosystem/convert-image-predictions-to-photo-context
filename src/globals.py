@@ -100,18 +100,12 @@ class AnnCache:
             ann = sly.Annotation.from_json(ann_json, meta)
             old_ann = sly.Annotation.load_json_file(old_ann_path, meta)
             new_labels = []
-            for label in ann.labels:
-                found = False
-                for old_label in old_ann.labels:
-                    if label.sly_id == old_label.sly_id:
-                        found = True
-                        break
-                if found:  # if label is not new, skip it
-                    continue
-                new_labels.append(label)
+            for new in ann.labels:
+                if not any(new.sly_id == old.sly_id for old in old_ann.labels):
+                    new_labels.append(new)
             ann = ann.clone(labels=new_labels)
             return ann
-        return sly.Annotation.load_json_file(old_ann_path, meta)
+        return sly.Annotation.load_json_file(old_ann_path, meta).clone(labels=[])
 
     def __setitem__(self, img_id, value):
         self.cache[img_id] = value

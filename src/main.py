@@ -13,13 +13,20 @@ from supervisely.pointcloud_annotation.pointcloud_object_collection import (
 )
 
 sync_btn = w.Button("Run")
+apply_cluster_field = w.Field(
+    title="Apply cluster filtering",
+    description="Apply DBSCAN clustering to the point cloud points inside the mask.",
+    content=w.Empty(),
+)
+apply_cluster_checkbox = w.Checkbox(checked=False, content=apply_cluster_field)
+
 field = w.Field(
     content=sync_btn,
     title="Sync 2D masks to 3D point cloud objects",
     description="Automatically convert newly created 2D masks and upload them to corresponding 3D point cloud objects.",
 )
 text = w.Text(status="error")
-layout = w.Container([field, text])
+layout = w.Container([field, apply_cluster_checkbox, text])
 app = sly.Application(layout=layout)
 server = app.get_server()
 
@@ -108,9 +115,13 @@ def sync_btn_click(request: Request):
                 sly.logger.warning(f"No points inside mask for label {cls_name}. Skipping.")
                 continue
 
-            inside_masks_processed = f.extract_largest_cluster(
-                pcd, inside_masks, eps=1.5, min_points=100
-            )
+            # apply clustering if needed
+            if apply_cluster_checkbox.is_checked():
+                inside_masks_processed = f.extract_largest_cluster(
+                    pcd, inside_masks, eps=1.5, min_points=100
+                )
+            else:
+                inside_masks_processed = np.array(inside_masks, dtype=np.int32).tolist()
             if len(inside_masks_processed) == 0:
                 sly.logger.warning(f"No significant cluster found for label {cls_name}. Skipping.")
                 continue
@@ -118,7 +129,7 @@ def sync_btn_click(request: Request):
             # create new Pointcloud geometry, object and figure
             geom = Pointcloud(indices=inside_masks_processed)
 
-            obj_cls, new_meta, need_update = f.get_obj_class(g.dst_meta, cls_name)
+            obj_cls, new_meta, need_update = f.get_obj_class(g.dst_meta, lbl.obj_class)
             if need_update:
                 g.dst_meta = g.spawn_api.project.update_meta(dst_project_id, new_meta)
             if g.is_episode:
@@ -142,7 +153,8 @@ def sync_btn_click(request: Request):
             objs = PointcloudObjectCollection(new_objs)
 
         pcd_ann_api.object.append_to_dataset(dst_ds_id, objs, key_id_map)
-        pcd_ann_api.figure.append_to_dataset(dst_ds_id, new_lbls, [pcd_id], key_id_map)
+        pcd_ids = [pcd_id] * len(new_lbls)
+        pcd_ann_api.figure.append_to_dataset(dst_ds_id, new_lbls, pcd_ids, key_id_map)
 
         sly.logger.info("Sync completed")
         text.set("Sync completed", status="success")

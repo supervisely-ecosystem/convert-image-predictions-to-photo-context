@@ -129,7 +129,7 @@ def get_points_inside_mask(u, v, z, mask, img_width, img_height):
     return inside_mask_indices
 
 
-def get_obj_class(meta: sly.ProjectMeta, obj_class_name: str):
+def get_obj_class(meta: sly.ProjectMeta, src_obj_class: sly.ObjClass):
     """
     Check if the object class exists in the project metadata.
     If not, add it.
@@ -139,6 +139,7 @@ def get_obj_class(meta: sly.ProjectMeta, obj_class_name: str):
     - meta: Updated project metadata.
     - need_update: Boolean indicating if metadata needs to be updated.
     """
+    obj_class_name = src_obj_class.name
     obj_class = meta.get_obj_class(obj_class_name)
     need_update = False
 
@@ -149,7 +150,7 @@ def get_obj_class(meta: sly.ProjectMeta, obj_class_name: str):
 
     if obj_class is None:
         # Create a new object class
-        obj_class = sly.ObjClass(obj_class_name, Pointcloud)
+        obj_class = sly.ObjClass(obj_class_name, Pointcloud, color=src_obj_class.color)
         meta = meta.add_obj_class(obj_class)
         need_update = True
 
