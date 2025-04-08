@@ -160,7 +160,7 @@ def sync_btn_click(request: Request):
         text.set("Sync completed", status="success")
         text.show()
     except Exception as e:
-        sly.logger.error(f"Sync failed: {e}", stack_info=True)
+        sly.logger.error(f"Sync failed: {e}")
         text.set(f"Sync failed", status="error")
         text.show()
         return
