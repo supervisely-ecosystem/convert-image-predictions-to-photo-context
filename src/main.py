@@ -15,7 +15,7 @@ from supervisely.pointcloud_annotation.pointcloud_object_collection import (
 sync_btn = w.Button("Run")
 apply_cluster_field = w.Field(
     title="Apply cluster filtering",
-    description="Apply DBSCAN clustering to the point cloud points inside the mask.",
+    description="Apply DBSCAN clustering to the point cloud points inside the mask to remove noise.",
     content=w.Empty(),
 )
 apply_cluster_checkbox = w.Checkbox(checked=False, content=apply_cluster_field)
@@ -23,7 +23,7 @@ apply_cluster_checkbox = w.Checkbox(checked=False, content=apply_cluster_field)
 field = w.Field(
     content=sync_btn,
     title="Sync 2D masks to 3D point cloud objects",
-    description="Automatically convert newly created 2D masks and upload them to corresponding 3D point cloud objects.",
+    description="Automatically convert 2D masks and upload them to corresponding 3D point cloud objects.",
 )
 text = w.Text(status="error")
 layout = w.Container([field, apply_cluster_checkbox, text])
@@ -76,6 +76,17 @@ def sync_btn_click(request: Request):
             g.dst_dataset_id = dst_ds_id
             g.dst_meta = sly.ProjectMeta.from_json(g.api.project.get_meta(dst_project_id))
 
+        sly.logger.info(
+            "Syncing",
+            extra={
+                "image_id": image_id,
+                "image_name": img_info.name,
+                "dst_project_id": dst_project_id,
+                "dst_dataset_id": dst_ds_id,
+                "pointcloud_id": pcd_id,
+                "pointcloud_name": pcd_info.name,
+            },
+        )
         # extract extrinsic and intrinsic matrices from image info
         extrinsic_matrix = image_meta["meta"]["meta"]["sensorsData"]["extrinsicMatrix"]
         extrinsic_matrix = np.asarray(extrinsic_matrix).reshape((3, 4))
