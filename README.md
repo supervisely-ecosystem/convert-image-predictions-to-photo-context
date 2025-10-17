@@ -8,7 +8,7 @@
   <a href="#Technical-Details">Technical Details</a>
 </p>
 
-[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](../../../../supervisely-ecosystem/copy-photo-context-from-to-images-project)
+[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervisely.com/apps/supervisely-ecosystem/copy-photo-context-from-to-images-project)
 [![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervisely.com/slack)
 ![GitHub release (latest)](https://img.shields.io/github/v/release/supervisely-ecosystem/copy-photo-context-from-to-images-project)
 [![views](https://app.supervisely.com/img/badges/views/supervisely-ecosystem/copy-photo-context-from-to-images-project.png)](https://supervisely.com)
